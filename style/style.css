@@ -1,9 +1,11 @@
 .topNav { background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FF9933), to(#CC7732)) }
+.ui-content .items { bottom: 0 !important; }
 .nav-button .labelSprite { margin-right: 0; }
 .flagSpinner { clear: both; background: url(flag-spinner.png) no-repeat 0 0; width: 47px; height: 48px; -webkit-}
 .boxContainer { display: -webkit-box; display: -moz-box; display: box; -webkit-box-align: center; -moz-box-align: center; box-align: center; -webkit-box-pack: center; -moz-box-pack: center; box-pack: center; }
 .loadingContainer { margin-top: 30px; }
 .loadingContainer .boxContainer { margin-top: 10px; }
+#mapbox { height: 100%; width: 100%; }
 
 /* animation */
 

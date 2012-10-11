@@ -7,20 +7,27 @@
     <script src="javascripts/zepto.js"></script>
     <script src="javascripts/zepto-touch.js"></script>
     <script src="javascripts/zepto-ajax.js"></script>
+    <script src="javascripts/leaflet-src.js"></script>
     <script src="javascripts/vk.js"></script>
     <script src="javascripts/iscroll.js"></script>
     <script src="javascripts/jScroll.js"></script>    
     <link rel="stylesheet" href="style/vk.css">
     <link rel="stylesheet" href="style/sprite.css">
+    <link rel="stylesheet" href="style/leaflet.css">
     <link rel="stylesheet" href="style/style.css">
   </head>
   <body>
     
     <div class="ui-content">
       <div class="nav"></div>
-      <div class="items"></div>
+      <div class="items" id="items"></div>
       <div class="footer"></div>
     </div>
+    
+
+    <script type="text/mustache" class="mapContainerTemplate">
+      <div id="mapbox"></div>
+    </script>
     
     <script type="text/mustache" class="loadingTemplate">
       <div class="loadingContainer">
