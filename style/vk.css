@@ -1,0 +1,130 @@
+html, body { margin: 0; font: 14px/1.6 "Helvetica Neue", Helvetica, arial, sans-serif; }
+
+
+.vk-container * {
+  
+  /* prevent callout to copy image, etc when tap to hold */
+  -webkit-touch-callout: none; 
+  
+  /* prevent webkit from resizing text to fit */
+  -webkit-text-size-adjust: none; 
+  
+  /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+
+}
+
+.vk-container input[type="checkbox"] { 
+  -webkit-appearance:none;
+  /* ios6 specific: */
+  border: none;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0);
+}
+.vk-container input::-webkit-input-placeholder { opacity: .8; }
+.vk-container a { text-decoration: none; outline: 0; line-height: inherit; }
+.vk-container a:active .highlight { background: #fafafa; }
+.vk-container { height: 100%; }.topNav { position: fixed; top: 0; right: 0; left: 0; z-index: 666; height: 49px; border-bottom: 1px solid #6d8f75; background-color: #e4e4e4; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#96c7a2), to(#87b492)); border-top-right-radius: 5px; border-top-left-radius: 5px;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -o-box-align: center;
+  box-align: center;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -o-box;
+  display: box;
+}
+
+.topNav .left.buttons .actionButton { float: left; }
+
+.nav-button.action .sprite.icon-refresh { margin: 0px 10px; }
+.bottomNav { height: 55px; z-index: 666; position: fixed; bottom: 0px; left: 0px; right: 0px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; background-color: #464646; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#313131), to(#464646)); 
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -o-box-align: center;
+  box-align: center;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -o-box;
+  display: box;
+}
+.bottomNav .active { color: #111111; text-shadow: 0 1px 0 white; border-radius: 3px; background: #96C7A2; border-left: 1px solid #6F816F; border-right: 1px solid #6F816F;}
+.bottomNav .refreshButton { width: 38px; height: 38px; border-radius: 3px; background: #96C7A2; border-left: 1px solid #6F816F; border-right: 1px solid #6F816F; display: -webkit-box; }
+.bottomNav .refreshButton:active { background-color: #C7DECC; }
+.bottomNav .refreshButton .sprite { margin: 7px auto 7px auto; -webkit-box-align: center; }
+.bottomNav .refreshButton .sprite.spinning { background: url('images/transparent-loader.gif') no-repeat 4px 4px; background-size: initial; }
+.nav-button.following { font-size: 13.5px; font-weight: bold; border-bottom-left-radius: 5px; }
+.nav-button.settings { border-bottom-right-radius: 5px;  }
+.whitePlaceholder { height: 54px; width: 100%; background: white;}
+.bottomNav .left.buttons { -webkit-box-flex: 2; display: -webkit-box; }
+.bottomNav .left.buttons a { -webkit-box-flex: 1; }
+.bottomNav .right.buttons a { float: right; }
+.bottomNav.hidden { height: 0px !important; }
+.nav-button { font-size: 13.5px; background: #e5e5e5; color: #959595; float: left; line-height: 47px; height: 49px; text-align: center; }
+.nav-button.round { background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fefefe), to(#e6e6e6)); position: relative; font-size: 13.58px; text-shadow: 0 1px 0 white; color: #363636; line-height: 39px; height: 39px; border-radius: 3px; box-shadow: 0px 0px 1px rgba(0,0,0,1); z-index: 1;
+  display: -webkit-box;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
+  display: -moz-box;
+  -moz-box-pack: center;
+  -moz-box-align: center;
+  display: box;
+  box-pack: center;
+  box-align: center;
+}
+.nav-button.round:active { background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#e6e6e6), to(#fefefe));}
+.nav-button.round .label { margin: 0 10px; }
+.nav-button .labelSprite { margin-right: 5px; }
+.nav-button.srsbsns { background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fe8657), to(#e9794f)); color: white; text-shadow: none; font-family: 'Open Sans Bold'; margin: 0; width: 100%; }
+.nav-button.srsbsns:active { background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#e9794f), to(#fe8657));}
+.nav-button.disabled { background: #727272; color: #4a4a4a;}
+.nav-button.action { padding: 0 10px; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#d9f2fc), to(#c5dbe4));}
+.nav-button.action:active { background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#c5dbe4), to(#d9f2fc));}
+
+
+.buttons { 
+  overflow: auto;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -o-box-flex: 1;
+  box-flex: 1;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -o-box-align: center;
+  box-align: center; 
+}
+.left.buttons { margin-left: 5px; }
+.left.buttons .actionButton { margin-left: 3px; }
+.right.buttons .actionButton { float: right; margin-right: 3px; }
+.right.buttons { margin-right: 2px; }
+.nav-button.action .sprite.icon-refresh { margin: 0px 10px; }
+.bottomNav a { display: block; text-align: center; }
+.bottomButton { line-height: 38px; height: 38px; border-radius: 3px; padding: 0px; color: #c4c4c4; font-size: 13.58px; font-weight: bold; }
+.bottomButton:active { color: white; }
+/* browser compat notes: */
+/* for .ui-content .items there needs to be a bottom: 55px; set for all browsers except android 2.x */
+/* for android 2.x you need padding-bottom: 55px; if you set bottom: it breaks rendering */
+/* even if you un-set it in js after it renders */
+/* due to these constraints these values are set by JS instead of here */
+.ui-content .items { z-index:2 !important; background: white; font-family: Open Sans; border-top: 1px solid #cccccc; position: absolute; top: 50px; bottom: 55px; width: 100%; -webkit-overflow-scrolling: touch; }
+
+/* extend scroll area to bottom if the bottomnav is hidden */
+.hidden .items { bottom: 0px !important; }
+
+/*.ui-content .scroller { width: 100%; }
+
+.scroller > a { display: block; }
+*/
+.ui-content .item-details { overflow: auto; background-color: #e6e6e6; height: 100%; }
+.ui-content .itemDetails { margin-left: 60px; }
+.ui-content .items .row { min-height: 49px; border-bottom: 1px solid #cccccc; color: #363636; position: relative; 
+  display: -webkit-box;
+  -webkit-box-pack: center;
+  display: -moz-box;
+  -moz-box-pack: center;
+  display: box;
+  box-pack: center;
+}
+.ui-content .items .row:active { background-color: #e6e6e6 !important; }
+.ui-content .items a:nth-child(odd) .row { background-color: #fafafa;}

@@ -1,0 +1,38 @@
+.topNav { background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FF9933), to(#CC7732)) }
+.nav-button .labelSprite { margin-right: 0; }
+.flagSpinner { clear: both; background: url(flag-spinner.png) no-repeat 0 0; width: 47px; height: 48px; -webkit-}
+.boxContainer { display: -webkit-box; display: -moz-box; display: box; -webkit-box-align: center; -moz-box-align: center; box-align: center; -webkit-box-pack: center; -moz-box-pack: center; box-pack: center; }
+.loadingContainer { margin-top: 30px; }
+.loadingContainer .boxContainer { margin-top: 10px; }
+
+/* animation */
+
+@-webkit-keyframes spin {
+  from { -webkit-transform: rotate(0deg); }
+  to { -webkit-transform: rotate(360deg); }
+}
+
+@-moz-keyframes spin {
+  from { -moz-transform: rotate(0deg); }
+  to { -moz-transform: rotate(360deg); }
+}
+
+@-ms-keyframes spin {
+  from { -ms-transform: rotate(0deg); }
+  to { -ms-transform: rotate(360deg); }
+}
+
+.spinning {
+  -webkit-animation-name: spin; 
+  -webkit-animation-duration: 8000ms;
+  -webkit-animation-iteration-count: infinite; 
+  -webkit-animation-timing-function: linear;
+  -moz-animation-name: spin; 
+  -moz-animation-duration: 8000ms;
+  -moz-animation-iteration-count: infinite; 
+  -moz-animation-timing-function: linear;
+  -ms-animation-name: spin; 
+  -ms-animation-duration: 8000ms;
+  -ms-animation-iteration-count: infinite; 
+  -ms-animation-timing-function: linear;
+}
