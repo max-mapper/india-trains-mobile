@@ -2,6 +2,7 @@ var mustache = require('mustache')
 var _ = require('underscore')
 
 var app = {
+  nearbyRadius: 100000,
   routes: {},
   currentView: 'list'
 }
@@ -14,6 +15,12 @@ app.routes.map = function() {
   app.nav.switchNav('map')
   render('mapContainer', '.items')
   showMap()
+  getNearbyTrains(app.nearbyRadius, function(err, trains) {
+    app.nearbyTrains = trains
+    if (app.currentView !== 'map') return
+    renderTrainMap(trains)
+  })
+  return app.map.setView(new L.LatLng(12.972107449831794, 77.59265899658203), 12)
   locateAndSetMap(function(err) {
     if (err) {
       // there was an error finding the users location
@@ -29,14 +36,31 @@ app.routes.list = function() {
   initializeList()
 }
 
+function getPosition(cb) {
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+      cb(false, position)
+    },
+    function(error) {
+      console.log('getCurrentPosition err', error)
+      var code = error.code
+      if (code === 1) error = "Not allowed for this application."
+      if (code === 2) error = "Make sure location services are enabled on your phone."
+      if (code === 3) error = "Getting a GPS fix took too long."
+      cb(error)
+    }
+  )
+}
+
+
 function initializeList() {
   render('loading', '.items')
   loadUI()
   var viewState = app.currentView
-  fetchTrainList(function(err, trainList) {
-    if (err) return console.error(err)
+  getNearbyTrains(app.nearbyRadius, function(err, trains) {
+    app.nearbyTrains = trains
     if (app.currentView !== viewState) return
-    renderTrainList(trainList)
+    renderTrainList(trains)
   })
 }
 
@@ -63,6 +87,26 @@ function loadUI() {
   app.nav.add(button3, "left")
 }
 
+function getNearbyTrains(distance, cb) {
+  var trains, location
+  fetchTrainList(function(err, trainList) {
+    if (err) return cb(err)
+    trains = trainList
+    if (trains && location) gotData()
+  })
+  getPosition(function(err, position) {
+    if (err) return cb(err)
+    location = position
+    if (trains && location) gotData()
+  })
+  function gotData() {
+    var userLocation = new L.LatLng(location.coords.latitude, location.coords.longitude)
+    userLocation = new L.LatLng(12.972107449831794, 77.59265899658203)
+    trains = filterTrains(userLocation, trains, distance)
+    cb(false, trains)
+  }
+}
+
 function fetchTrainList(cb) {
   var trainList = "http://railradar.railyatri.in/coa/livetrainslist.json"
   var calledBack = false
@@ -79,18 +123,35 @@ function fetchTrainList(cb) {
   )
 }
 
-function renderTrainList(stations) {
-  app.stations = stations
-  var list = vk.list('.items')
-  var items = []
+function filterTrains(userLocation, stations, distance) {
+  var nearbyTrains = []
   Object.keys(stations).map(function(station) {
-    // ["15901","BENGALURU YESVANTPUR - DIBRUGARH Exp","2012-10-08","MXN","26.652675","94.308443","MARIANI JN","80","26.711727","94.399853","SLGR","SIMALUGURI JN",69,0],
     if (station === "count") return
-    stations[station].map(function(train) {
-      items.push(vk.item({'title': station + ": " + train[1]}))
+    _.each(stations[station], function(train, idx) {
+      train.distance = userLocation.distanceTo(new L.LatLng(train[4], train[5]))
+      if (train.distance < distance) {
+        nearbyTrains.push(train)
+      }
     })
   })
-  list.add(items)
+  nearbyTrains = _.sortBy(nearbyTrains, function(train) { return train[14] })
+  return nearbyTrains
+}
+
+function renderTrainList(trains) {
+  app.trains = trains
+  if (trains.length === 0) return render('noNearbyTrains', '.items')
+  var list = vk.list('.items')
+  // ["15901","BENGALURU YESVANTPUR - DIBRUGARH Exp","2012-10-08","MXN","26.652675","94.308443","MARIANI JN","80","26.711727","94.399853","SLGR","SIMALUGURI JN",69,0],
+  list.add(trains.map(function(item) {
+    return vk.item({'title': item[1] + ' -- ' +  item.distance})
+  }))
+}
+
+function renderTrainMap(trains) {
+  trains.map(function(item) {
+    L.marker([item[4], item[5]]).addTo(app.map)
+  })
 }
 
 function render( template, target, data, partials ) {
@@ -151,6 +212,6 @@ function showMap(container) {
   app.map = new L.Map(container || 'mapbox', {zoom: 12, attributionControl: true, zoomControl: false})
   var tiles ="http://a.tiles.mapbox.com/v3/mapbox.mapbox-streets/{z}/{x}/{y}.png"
   // if (app.retina) tiles = ""
-  var layer = new L.TileLayer(tiles, {maxZoom: 17, minZoom: 8, detectRetina: true})
+  var layer = new L.TileLayer(tiles, {maxZoom: 17, minZoom: 3, detectRetina: true})
   app.map.addLayer(layer)
 }
