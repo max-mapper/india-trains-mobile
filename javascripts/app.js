@@ -43,7 +43,10 @@ function initializeList() {
 app.container.on('modal', function(route) {
   if (route === "map") return app.routes.map()
   if (route === "list") return app.routes.list()
-  if (route === "refresh") return initializeList()
+  if (route === "refresh") {
+    if (app.currentView === "list") return initializeList()
+    if (app.currentView === "map") return locateAndSetMap()
+  }
 })
 
 function loadUI() {
@@ -76,11 +79,18 @@ function fetchTrainList(cb) {
   )
 }
 
-function renderTrainList(items) {
-  var list = vk.list('.items')   
-  list.add(Object.keys(items).map(function(item) {
-    return vk.item({'title': item})
-  }))
+function renderTrainList(stations) {
+  app.stations = stations
+  var list = vk.list('.items')
+  var items = []
+  Object.keys(stations).map(function(station) {
+    // ["15901","BENGALURU YESVANTPUR - DIBRUGARH Exp","2012-10-08","MXN","26.652675","94.308443","MARIANI JN","80","26.711727","94.399853","SLGR","SIMALUGURI JN",69,0],
+    if (station === "count") return
+    stations[station].map(function(train) {
+      items.push(vk.item({'title': station + ": " + train[1]}))
+    })
+  })
+  list.add(items)
 }
 
 function render( template, target, data, partials ) {
