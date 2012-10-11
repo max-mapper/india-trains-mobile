@@ -1,3 +1,4 @@
+body { font-family: "Helvetica Neue", "Helvetica", "Open Sans", sans-serif }
 .topNav { background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FF9933), to(#CC7732)) }
 .ui-content .items { bottom: 0 !important; }
 .nav-button .labelSprite { margin-right: 0; }
