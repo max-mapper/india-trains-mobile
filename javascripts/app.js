@@ -27,7 +27,7 @@ var app = {
 
 initializeList()
 
-app.routes.map = function() {
+app.routes.map = function(center) {
   if (app.currentView !== 'map') {
     app.nav.switchNav('map')
     render('mapContainer', '.items')
@@ -36,12 +36,13 @@ app.routes.map = function() {
   }
   var refreshIcon = $('.sprite-icon-refresh-white')
   refreshIcon.addClass('spinning')
-  getNearbyTrains(app.nearbyRadius, function(err, trains) {
+  getNearbyTrains(center, app.nearbyRadius, function(err, trains) {
     refreshIcon.removeClass('spinning')
     app.nearbyTrains = trains
     if (app.currentView !== 'map') return
     renderTrainMap(trains)
   })
+  if (center) return
   locateAndSetMap(function(err) {
     if (err) {
       // there was an error finding the users location
@@ -78,7 +79,7 @@ function initializeList() {
   render('loading', '.items')
   loadUI()
   var viewState = app.currentView
-  getNearbyTrains(app.nearbyRadius, function(err, trains) {
+  getNearbyTrains(false, app.nearbyRadius, function(err, trains) {
     app.nearbyTrains = trains
     if (app.currentView !== viewState) return
     renderTrainList(trains)
@@ -90,7 +91,7 @@ app.container.on('modal', function(route) {
   if (route === "list") return app.routes.list()
   if (route === "refresh") {
     if (app.currentView === "list") return initializeList()
-    if (app.currentView === "map") return app.routes.map()
+    if (app.currentView === "map") return app.routes.map(app.map.getCenter())
   }
 })
 
@@ -108,16 +109,20 @@ function loadUI() {
   app.nav.add(button3, "left")
 }
 
-function getNearbyTrains(distance, cb) {
+function getNearbyTrains(specificLocation, distance, cb) {
   var trains, location
+  if (specificLocation) {
+    location = {coords: {latitude: specificLocation.lat, longitude: specificLocation.lng}}
+  } else {
+    getPosition(function(err, position) {
+      if (err) return cb(err)
+      location = position
+      if (trains && location) gotData()
+    })
+  }
   fetchTrainList(function(err, trainList) {
     if (err) return cb(err)
     trains = trainList
-    if (trains && location) gotData()
-  })
-  getPosition(function(err, position) {
-    if (err) return cb(err)
-    location = position
     if (trains && location) gotData()
   })
   function gotData() {
