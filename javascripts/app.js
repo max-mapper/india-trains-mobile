@@ -39,6 +39,7 @@ app.routes.map = function(center) {
   var refreshIcon = $('.sprite-icon-refresh-white')
   refreshIcon.addClass('spinning')
   getNearbyTrains(center, app.nearbyRadius, function(err, trains) {
+    if (err) return render('fetchError', '.items')
     refreshIcon.removeClass('spinning')
     app.nearbyTrains = trains
     if (app.currentView !== 'map') return
