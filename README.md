@@ -14,6 +14,10 @@ Only works with `touch` events at the moment, so for desktop browsers you are ou
 
 It would be nice if RailRadar provided an API for getting train locations in a specific area. Currently the API returns all trains in the entire country.
 
+### Why?
+
+I thought the train data was really cool and saw it was provided by the government of India (http://www.indianrail.gov.in/). I used to work for Code for America and love making government data more useful. Maybe now the Indian rail authority will get on github!
+
 ### License
 
 BSD LICENSED
