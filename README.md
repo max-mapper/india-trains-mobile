@@ -6,7 +6,9 @@ Note: if using this in production you should get a mapbox.com account and set th
 
 ### Requirements
 
-WebKit based browser (Android, iOS). If you find bugs please open issues in this repository.
+WebKit based mobile browser (Android, iOS). If you find bugs please open issues in this repository.
+
+Only works with `touch` events at the moment, so for desktop browsers you are out of luck.
 
 ### Wishlist
 

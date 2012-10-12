@@ -235,8 +235,8 @@ function getTemplate(template) {
 function locateAndSetMap(callback) {
   locateMap(function(err, data) {
     if (err) {
-      // bangalore
-      app.map.setView(new L.LatLng(12.972107449831794, 77.59265899658203), 12)
+      // new dehli
+      app.map.setView(new L.LatLng(28.635308, 77.22496), 12)
       return callback(true)
     } 
     app.map.setView(data.latlng, 12)
