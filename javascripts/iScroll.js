@@ -2,7 +2,7 @@
  * iScroll v4.1.9 ~ Copyright (c) 2011 Matteo Spinelli, http://cubiq.org
  * Released under MIT license, http://cubiq.org/license
  */
-(function(){
+;(function(){
 var m = Math,
 	mround = function (r) { return r >> 0; },
 	vendor = (/webkit/i).test(navigator.appVersion) ? 'webkit' :
