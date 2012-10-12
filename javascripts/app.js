@@ -1,3 +1,4 @@
+// Train schema:
 // [
 //   "11402", // trainNumber
 //   "NAGPUR - MUMBAI CST Nandigram Express", // name
@@ -21,6 +22,7 @@ var _ = require('underscore')
 var app = {
   nearbyRadius: 100000,
   routes: {},
+  tileURL: "http://a.tiles.mapbox.com/v3/mapbox.mapbox-streets/{z}/{x}/{y}.png",
   currentView: 'list',
   retina: window.devicePixelRatio > 1 ? true : false
 }
@@ -297,7 +299,7 @@ function rotateIcon(icon, degrees) {
 
 function showMap(container) {
   app.map = new L.Map(container || 'mapbox', {zoom: 12, attributionControl: true, zoomControl: false})
-  var tiles ="http://a.tiles.mapbox.com/v3/mapbox.mapbox-streets/{z}/{x}/{y}.png"
+  var tiles = app.tileURL
   // if (app.retina) tiles = ""
   var layer = new L.TileLayer(tiles, {maxZoom: 17, minZoom: 3, detectRetina: true})
   app.map.addLayer(layer)
