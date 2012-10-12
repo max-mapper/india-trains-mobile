@@ -1,21 +1,43 @@
+// [
+//   "11402", // trainNumber
+//   "NAGPUR - MUMBAI CST Nandigram Express", // name
+//   "2012-10-12", // startedOn
+//   "SHSK", // lastUpdateShortName
+//   "19.403135", // lat
+//   "78.008423", // lon
+//   "SAHARSRAKUND", // lastUpdateLongName
+//   "40", // lastStatusDelayInMinutes
+//   "19.417059", // previousLat
+//   "77.869205", // previousLon
+//   "HEM", // nextHaltShortName
+//   "HIMAYATNAGAR", // nextHaltLongName
+//   40, // lastStatusDelayInMinutesInt
+//   533 // ?
+// ]
+
 var mustache = require('mustache')
 var _ = require('underscore')
 
 var app = {
   nearbyRadius: 100000,
   routes: {},
-  currentView: 'list'
+  currentView: 'list',
+  retina: window.devicePixelRatio > 1 ? true : false
 }
 
 initializeList()
 
 app.routes.map = function() {
-  if (app.currentView === 'map') return
-  app.currentView = 'map'
-  app.nav.switchNav('map')
-  render('mapContainer', '.items')
-  showMap()
+  if (app.currentView !== 'map') {
+    app.nav.switchNav('map')
+    render('mapContainer', '.items')
+    showMap()
+    app.currentView = 'map'
+  }
+  var refreshIcon = $('.sprite-icon-refresh-white')
+  refreshIcon.addClass('spinning')
   getNearbyTrains(app.nearbyRadius, function(err, trains) {
+    refreshIcon.removeClass('spinning')
     app.nearbyTrains = trains
     if (app.currentView !== 'map') return
     renderTrainMap(trains)
@@ -69,7 +91,7 @@ app.container.on('modal', function(route) {
   if (route === "list") return app.routes.list()
   if (route === "refresh") {
     if (app.currentView === "list") return initializeList()
-    if (app.currentView === "map") return locateAndSetMap()
+    if (app.currentView === "map") return app.routes.map()
   }
 })
 
@@ -107,12 +129,16 @@ function getNearbyTrains(distance, cb) {
   }
 }
 
+// for specific train schedule: 
+// http://coa-search-193678880.ap-southeast-1.elb.amazonaws.com/schedule/79304.json
+
 function fetchTrainList(cb) {
   var trainList = "http://railradar.railyatri.in/coa/livetrainslist.json"
   var calledBack = false
   $.getJSON(
     trainList + '?callback=?',
     function(obj) {
+      app.trainCache = obj[0]
       if (!calledBack) cb(false, obj[0])
       calledBack = true
     },
@@ -134,7 +160,9 @@ function filterTrains(userLocation, stations, distance) {
       }
     })
   })
-  nearbyTrains = _.sortBy(nearbyTrains, function(train) { return train[14] })
+  nearbyTrains = _.sortBy(nearbyTrains, function(train) {
+    return train.distance
+  })
   return nearbyTrains
 }
 
@@ -142,15 +170,32 @@ function renderTrainList(trains) {
   app.trains = trains
   if (trains.length === 0) return render('noNearbyTrains', '.items')
   var list = vk.list('.items')
-  // ["15901","BENGALURU YESVANTPUR - DIBRUGARH Exp","2012-10-08","MXN","26.652675","94.308443","MARIANI JN","80","26.711727","94.399853","SLGR","SIMALUGURI JN",69,0],
+  var rowTemplate = getTemplate('row')
   list.add(trains.map(function(item) {
-    return vk.item({'title': item[1] + ' -- ' +  item.distance})
+    var distance = Math.floor(item.distance / 1000)
+    var item = vk.item({title: item[1], distance: distance})
+    item.template = rowTemplate // todo better api for defining templates
+    return item
   }))
+}
+
+function getDirection(e, t, n, r) {
+  var i = 0;
+  return i = Math.atan2(
+    Math.sin(r - t) * Math.cos(n),
+    Math.cos(e) * Math.sin(n) - Math.sin(e) * Math.cos(n) * Math.cos(r - t)
+  ) % (2 * Math.PI), i = i * 180 / Math.PI, i
 }
 
 function renderTrainMap(trains) {
   trains.map(function(item) {
-    L.marker([item[4], item[5]]).addTo(app.map)
+    showTrain([item[4], item[5]], getDirection(item[4], item[5], item[8], item[9]))
+  })
+  // leaflet clobbers our webkit-transform rotate :(
+  app.map.on('viewreset', function() {
+    $('.trainArrow').each(function(i, train) {
+      rotateIcon($(train))
+    })
   })
 }
 
@@ -206,6 +251,32 @@ function showUserLocation(userLocation) {
   if (app.retina && !app.compassEnabled) iconOptions.iconUrl = './images/map-userlocation-nocompass@2x.png'
   var userIcon = new UserIcon(iconOptions)
   L.marker([userLocation.lat, userLocation.lng], {icon: userIcon}).addTo(app.map)
+}
+
+function showTrain(location, direction) {
+  var TrainIcon = L.Icon.extend({
+    options: {
+      iconSize:     [33, 33],
+      shadowSize:   [0, 0],
+      iconAnchor:   [16, 16],
+      shadowAnchor: [8, 9],
+      popupAnchor:  [-3, -20]
+    }
+  })
+  var iconOptions = {iconUrl: './images/arrow.png', className: "trainArrow"}
+  if (app.retina) iconOptions.iconUrl = './images/arrow@2x.png'
+  var trainIcon = new TrainIcon(iconOptions)
+  var marker = L.marker(location, {icon: trainIcon}).addTo(app.map)
+  rotateIcon($(marker._icon), direction)
+}
+
+function rotateIcon(icon, degrees) {
+  if (degrees) icon.attr('data-degrees', degrees)
+  else degrees = icon.attr('data-degrees')
+  var transformSettings = icon.css('-webkit-transform')
+  // dont remove existing webkit transform properties
+  transformSettings = transformSettings.replace(/\s?rotate\(.+\)/, '')
+  icon.css('-webkit-transform', transformSettings + ' rotate(' + Math.floor(degrees) + 'deg)')
 }
 
 function showMap(container) {

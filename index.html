@@ -34,6 +34,15 @@
       <div id="mapbox"></div>
     </script>
     
+    <script type="text/mustache" class="rowTemplate">
+      <a href="#/details/{{_id}}" data-id="{{_id}}">
+        <div class="row">
+          <div class="name">{{title}}</div>
+          <div class="distance">{{distance}}km</div>
+        </div>
+      </a>
+    </script>
+    
     <script type="text/mustache" class="loadingTemplate">
       <div class="loadingContainer">
         <div class="boxContainer">
