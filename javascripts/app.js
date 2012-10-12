@@ -42,7 +42,6 @@ app.routes.map = function() {
     if (app.currentView !== 'map') return
     renderTrainMap(trains)
   })
-  return app.map.setView(new L.LatLng(12.972107449831794, 77.59265899658203), 12)
   locateAndSetMap(function(err) {
     if (err) {
       // there was an error finding the users location
@@ -123,7 +122,6 @@ function getNearbyTrains(distance, cb) {
   })
   function gotData() {
     var userLocation = new L.LatLng(location.coords.latitude, location.coords.longitude)
-    userLocation = new L.LatLng(12.972107449831794, 77.59265899658203)
     trains = filterTrains(userLocation, trains, distance)
     cb(false, trains)
   }
@@ -166,17 +164,32 @@ function filterTrains(userLocation, stations, distance) {
   return nearbyTrains
 }
 
+function calculateTrainInfo(train) {
+  var distance = Math.floor(train.distance / 1000)
+  var delay = getTrainDelay(train)
+  return {title: train[1], distance: distance, delay: delay.delayed, delayMessage: delay.message}
+}
+
 function renderTrainList(trains) {
   app.trains = trains
   if (trains.length === 0) return render('noNearbyTrains', '.items')
   var list = vk.list('.items')
   var rowTemplate = getTemplate('row')
-  list.add(trains.map(function(item) {
-    var distance = Math.floor(item.distance / 1000)
-    var item = vk.item({title: item[1], distance: distance})
+  list.add(trains.map(function(train) {
+    var trainInfo = calculateTrainInfo(train)
+    var item = vk.item(trainInfo)
     item.template = rowTemplate // todo better api for defining templates
     return item
   }))
+}
+
+function getTrainDelay(train) {
+  var delayed = false
+  var delayMargin = 15
+  var delay = parseInt(train[12])
+  delay != NaN && (delayed = delay > delayMargin ? true : delayed)
+  if (delayed) return {delayed: delayed, message: delay + " min late"}
+  else return {delayed: delayed, message: "On time"}
 }
 
 function getDirection(e, t, n, r) {
@@ -189,7 +202,7 @@ function getDirection(e, t, n, r) {
 
 function renderTrainMap(trains) {
   trains.map(function(item) {
-    showTrain([item[4], item[5]], getDirection(item[4], item[5], item[8], item[9]))
+    showTrain([item[4], item[5]], getDirection(item[4], item[5], item[8], item[9]), item)
   })
   // leaflet clobbers our webkit-transform rotate :(
   app.map.on('viewreset', function() {
@@ -235,25 +248,22 @@ function locateMap(callback) {
 }
 
 function showUserLocation(userLocation) {
-  return
   var UserIcon = L.Icon.extend({
     options: {
-      iconSize:     [16, 18],
+      iconSize:     [10, 27],
       shadowSize:   [0, 0],
-      iconAnchor:   [8, 9],
-      shadowAnchor: [8, 9],
+      iconAnchor:   [5, 14],
+      shadowAnchor: [0, 0],
       popupAnchor:  [-3, -20]
     }
   })
   var iconOptions = {iconUrl: './images/map-userlocation.png', className: "userLocationMarker"}
-  if (!app.compassEnabled) iconOptions.iconUrl = './images/map-userlocation-nocompass.png'
   if (app.retina) iconOptions.iconUrl = './images/map-userlocation@2x.png'
-  if (app.retina && !app.compassEnabled) iconOptions.iconUrl = './images/map-userlocation-nocompass@2x.png'
   var userIcon = new UserIcon(iconOptions)
   L.marker([userLocation.lat, userLocation.lng], {icon: userIcon}).addTo(app.map)
 }
 
-function showTrain(location, direction) {
+function showTrain(location, direction, train) {
   var TrainIcon = L.Icon.extend({
     options: {
       iconSize:     [33, 33],
@@ -266,7 +276,8 @@ function showTrain(location, direction) {
   var iconOptions = {iconUrl: './images/arrow.png', className: "trainArrow"}
   if (app.retina) iconOptions.iconUrl = './images/arrow@2x.png'
   var trainIcon = new TrainIcon(iconOptions)
-  var marker = L.marker(location, {icon: trainIcon}).addTo(app.map)
+  var trainInfo = buildTemplate('row', calculateTrainInfo(train))
+  var marker = L.marker(location, {icon: trainIcon}).bindPopup(trainInfo).addTo(app.map)
   rotateIcon($(marker._icon), direction)
 }
 

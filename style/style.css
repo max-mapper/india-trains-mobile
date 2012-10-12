@@ -3,9 +3,19 @@
   font-style: normal;
   src: url('fonts/OpenSans-Regular.ttf');
 }
+@font-face {
+  font-family: 'Open Sans Bold';
+  font-style: normal;
+  src: url('fonts/OpenSans-Bold.ttf');
+}
 
 body { font-family: "Helvetica Neue", "Helvetica", "Open Sans", sans-serif }
 .topNav { background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FF9933), to(#CC7732)); border-bottom: 1px solid grey; }
+.ui-content .items .row { display: block; padding: 5px 0 0 0; }
+.separator { margin: 0px 5px; }
+.delayed { color: red; }
+.name, .emphasis { font-weight: bold; }
+.error { margin: 30px 10px; }
 .nav-button.action { background: rgba(0, 0, 0, 0.25); padding: 0 8px; border-radius: 5px; margin-right: 3px }
 .ui-content .items { bottom: 0 !important; }
 .nav-button .labelSprite { margin-right: 0; }

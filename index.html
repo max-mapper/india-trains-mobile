@@ -25,8 +25,8 @@
     </div>
     
     <script type="text/mustache" class="noNearbyTrainsTemplate">
-      <div class="boxContainer">
-        No trains nearby.
+      <div class="boxContainer error">
+        No trains found within <span class="emphasis">100km</span> of your current location.
       </div>
     </script>
 
@@ -35,12 +35,16 @@
     </script>
     
     <script type="text/mustache" class="rowTemplate">
-      <a href="#/details/{{_id}}" data-id="{{_id}}">
-        <div class="row">
+      <div class="row">
+        <div class="boxContainer">
           <div class="name">{{title}}</div>
-          <div class="distance">{{distance}}km</div>
         </div>
-      </a>
+        <div class="boxContainer">
+          <div class="distance">{{distance}}km away</div>
+          <span class="separator">-</span>
+          <div class="delay {{#delay}}delayed{{/delay}}">{{delayMessage}}</div>
+        </div>
+      </div>
     </script>
     
     <script type="text/mustache" class="loadingTemplate">
@@ -49,7 +53,7 @@
           <div class="flagSpinner spinning"></div>
         </div>
         <div class="boxContainer">
-          <div class="loadingMessage">Loading train schedules...</div>
+          <div class="loadingMessage">Locating trains within <span class="emphasis">100km</span>...</div>
         </div>
       </div>
     </script>
