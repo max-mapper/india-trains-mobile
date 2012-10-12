@@ -16,7 +16,7 @@ It would be nice if RailRadar provided an API for getting train locations in a s
 
 ### Why?
 
-I thought the train data was really cool and saw it was provided by the government of India (http://www.indianrail.gov.in/). I used to work for Code for America and love making government data more useful. Maybe now the Indian rail authority will get on github!
+I thought the train data was really cool and saw it was provided by the government of India (http://www.indianrail.gov.in/). I used to work for Code for America and love making government data more useful. Maybe now the Indian rail authority will get on github! Total development time for this app was between 4 - 6 hours.
 
 ### License
 
